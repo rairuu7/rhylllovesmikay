@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💘 Tap for Random BF Picture</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    body {
+      color: #333;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #fff0f5, #ffe5ec);
+      text-align: center;
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://i.imgur.com/7VvDpH5.png');
+      background-size: cover;
+      background-position: center;
+      filter: blur(6px) brightness(0.8);
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 245, 248, 0.5);
+      z-index: -1;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      font-weight: 600;
+      color: #ff4d6d;
+      text-shadow: 0 1px 2px rgba(255, 200, 210, 0.8);
+    }
+
+    img, video {
+      display: block;
+      margin: 0 auto;
+      border-radius: 15px;
+      max-width: 90vw;
+      max-height: 55vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease, opacity 0.5s ease;
+      cursor: pointer;
+    }
+
+    img:hover, video:hover {
+      transform: scale(1.05);
+    }
+
+    #caption {
+      font-family: 'Poppins', sans-serif;
+      color: #ff4d6d;
+      margin-top: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      min-height: 25px;
+      transition: opacity 0.4s ease;
+    }
+
+    button {
+      margin-top: 12px;
+      padding: 9px 22px;
+      background-color: #ff5c8d;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #ff3c6f;
+      transform: scale(1.05);
+    }
+
+    .heart {
+      position: fixed;
+      color: #ff4d6d;
+      font-size: 22px;
+      opacity: 0.8;
+      animation: floatUp 1.4s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-120px) scale(1.8); opacity: 0; }
+    }
+
+    /* ❤️ Love Bar Container */
+    #loveContainer {
+      margin-top: 18px;
+      width: 90%;
+      max-width: 360px;
+      height: 16px;
+      border: 2px solid #ff4d6d;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(255, 76, 106, 0.3);
+      overflow: hidden;
+      position: relative;
+      z-index: 5;
+    }
+
+    /* ❤️ Love Bar Glow Pulse */
+    #loveBar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff4d6d, #ff99ac, #ff4d6d);
+      background-size: 200% 200%;
+      animation: heartbeatGlow 1.4s infinite ease-in-out;
+      transition: width 0.4s ease-in-out;
+    }
+
+    @keyframes heartbeatGlow {
+      0%, 100% {
+        box-shadow: 0 0 8px #ff4d6d;
+        transform: scaleX(1);
+        background-position: 0% 50%;
+      }
+      50% {
+        box-shadow: 0 0 18px #ff99ac;
+        transform: scaleX(1.02);
+        background-position: 100% 50%;
+      }
+    }
+
+    #loveText {
+      margin-top: 6px;
+      color: #ff4d6d;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 1.1rem; margin-bottom: 10px; }
+      #caption { font-size: 0.9rem; }
+      button { font-size: 0.85rem; padding: 8px 18px; }
+      #loveContainer { height: 14px; }
+      #loveText { font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+  <h1>💞 Tap for Random Rhyllie Boyfie Picture 💞</h1>
+
+  <img id="bfImg" src="https://i.imgur.com/qgmJ90O.jpeg" alt="boyfriend picture" />
+  <video id="bfVideo" style="display:none;" playsinline></video>
+
+  <div id="caption">"your fave boy in his chill mode 😎"</div>
+  <button id="newBtn">💘 New Picture</button>
+
+  <div id="loveContainer"><div id="loveBar"></div></div>
+  <div id="loveText">Love bar: 0 / 10 💗</div>
+
+  <!-- 💖 Funny “Correct Answer” Sound -->
+  <audio id="buttonSound" src="https://www.myinstants.com/media/sounds/rizz-sound-effect.mp3" preload="auto"></audio>
+
+  <script>
+    const bfPics = [
+      { src: "https://i.imgur.com/qgmJ90O.jpeg", caption: "your fave boy in his chill mode 😎" },
+      { src: "https://i.imgur.com/qbxmmU2.jpeg", caption: "hmmm, double sided...tape" },
+      { src: "https://i.imgur.com/j2w8ILD.jpeg", caption: "ale na bubby sundo tika, me move it driver 😉" },
+      { src: "https://i.imgur.com/u9GmPZv.jpeg", caption: "that look he gives when he misses you 🥺" },
+      { src: "https://i.imgur.com/TSUdpj0.jpeg", caption: "nak picture oh imo paborito esnupi" },
+      { src: "https://i.imgur.com/qseeRLy.jpeg", caption: "hmmmmmmm" },
+      { src: "https://i.imgur.com/U0a1eao.jpeg", caption: "Your own dionela at home" },
+      { src: "https://i.imgur.com/DTEhJDb.jpeg", caption: "hey bubbygirl ❤️" },
+      { src: "https://i.imgur.com/sYGV8ld.jpeg", caption: "Final Defense anak" },
+      { src: "https://i.imgur.com/tSm9qDk.jpeg", caption: "mukbang @manginasal?" },
+      { src: "https://i.imgur.com/1qIf1PL.jpeg", caption: "shalalah" },
+      { src: "https://i.imgur.com/rGisL36.jpeg", caption: "Freakylicious" },
+      { src: "https://i.imgur.com/7Crl9OX.jpeg", caption: "nyaknyaknyak" },
+      { src: "https://i.imgur.com/RNMq58K.jpeg", caption: "arf arf arf" },
+      { src: "https://i.imgur.com/mpKHc5u.jpeg", caption: "glam" },
+      { src: "https://i.imgur.com/pRwoj6v.jpeg", caption: "herru kittyuhhh" },
+      { src: "https://i.imgur.com/1rV3GaG.jpeg", caption: "...Kahit maputi na ang buhok ko" }
+    ];
+
+    const secretReward = {
+      video: "https://i.imgur.com/78HZE3h.mp4",
+      caption: "💞 Secret unlocked 💞"
+    };
+
+    const imgEl = document.getElementById("bfImg");
+    const vidEl = document.getElementById("bfVideo");
+    const captionEl = document.getElementById("caption");
+    const btnEl = document.getElementById("newBtn");
+    const loveBar = document.getElementById("loveBar");
+    const loveText = document.getElementById("loveText");
+    const buttonSound = document.getElementById("buttonSound");
+
+    let loveLevel = 0;
+    let remainingPics = [...bfPics];
+
+    function getRandomPic() {
+      if (remainingPics.length === 0) remainingPics = [...bfPics];
+      const randomIndex = Math.floor(Math.random() * remainingPics.length);
+      const pic = remainingPics[randomIndex];
+      remainingPics.splice(randomIndex, 1);
+      return pic;
+    }
+
+    btnEl.addEventListener("click", () => {
+      // 🎵 Play funny “Correct Answer” sound
+      buttonSound.currentTime = 0;
+      buttonSound.play();
+
+      imgEl.style.opacity = 0;
+      captionEl.style.opacity = 0;
+
+      setTimeout(() => {
+        if (loveLevel >= 10) {
+          imgEl.style.display = "none";
+          vidEl.style.display = "block";
+          vidEl.src = secretReward.video;
+          vidEl.autoplay = true;
+          vidEl.controls = false;
+          vidEl.muted = false;
+          vidEl.loop = false;
+          vidEl.play().catch(() => { vidEl.muted = true; vidEl.play(); });
+          captionEl.textContent = secretReward.caption;
+          loveText.textContent = "💖 Secret Unlocked! Love overload! 💖";
+          loveBar.style.width = "100%";
+
+          // Wait until video finishes before resetting
+          vidEl.onended = () => {
+            loveLevel = 0;
+            loveBar.style.width = "0%";
+            loveText.textContent = "Love bar: 0 / 10 💗";
+            vidEl.style.display = "none";
+            imgEl.style.display = "block";
+            captionEl.textContent = `"${bfPics[0].caption}"`;
+            imgEl.src = bfPics[0].src;
+          };
+        } else {
+          const random = getRandomPic();
+          vidEl.style.display = "none";
+          imgEl.style.display = "block";
+          imgEl.src = random.src;
+          captionEl.textContent = `"${random.caption}"`;
+          imgEl.style.opacity = 1;
+          captionEl.style.opacity = 1;
+          loveLevel++;
+          loveBar.style.width = (loveLevel * 10) + "%";
+          loveText.textContent = `Love bar: ${loveLevel} / 10 💗`;
+        }
+      }, 400);
+    });
+
+    imgEl.addEventListener("click", (e) => {
+      for (let i = 0; i < 10; i++) {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.textContent = "💗";
+        document.body.appendChild(heart);
+        const x = e.clientX + (Math.random() * 40 - 20);
+        const y = e.clientY + (Math.random() * 20 - 10);
+        heart.style.left = x + "px";
+        heart.style.top = y + "px";
+        heart.style.fontSize = Math.random() * 16 + 16 + "px";
+        setTimeout(() => heart.remove(), 1400);
+      }
+    });
+  </script>
+</body>
+</html>
